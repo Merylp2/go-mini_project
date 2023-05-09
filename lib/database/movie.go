@@ -22,16 +22,26 @@ func GetMovie() (movie models.Movie, err error) {
 	return movie, nil
 }
 
-func GetMovieById(id any) (models.Movie, error) {
+func GetMovieById(id any) (models.MovieDetail, error) {
 	var movie models.Movie
+	var movieD models.MovieDetail
 
 	err := config.DB.Where("id = ?", id).First(&movie).Error
 
 	if err != nil {
-		return models.Movie{}, err
+		return models.MovieDetail{}, err
 	}
 
-	return movie, nil
+	movieD.MovieId = movie.MovieId
+	movieD.Title = movie.Title
+	movieD.Genre = movie.Genre
+	movieD.Director = movie.Director
+	movieD.Description = movie.Description
+	movieD.Duration = movie.Duration
+	movieD.Rating = movie.Rating
+	movieD.ShowTimes = movie.ShowTimes
+
+	return movieD, nil
 }
 
 func UpdateMovie(movie models.Movie, id any) (models.Movie, error) {

@@ -1,20 +1,17 @@
 package main
 
 import (
-	"test/22_Middleware/Praktikum/config"
-	"test/22_Middleware/Praktikum/middlewares"
-	"test/22_Middleware/Praktikum/routes"
+	"go_movie-ticket/config"
+	m "go_movie-ticket/middlewares"
+	"go_movie-ticket/routes"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {
-	// create a new echo instance
 	config.InitDB()
 	e := routes.New()
-
-	middlewares.LogMiddlewares(e)
-	// start the server, and log if it fails
-	e.Logger.Fatal(e.Start(":8000"))
+	m.LogMiddlewares(e)
+	e.Logger.Fatal(e.Start(":8080"))
 
 }

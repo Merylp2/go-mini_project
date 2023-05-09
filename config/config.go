@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"test/22_Middleware/Praktikum/models"
+	"go_movie-ticket/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -28,11 +28,11 @@ type Config struct {
 func InitDB() {
 
 	config := Config{
-		DB_Username: "root",
-		DB_Password: "",
+		DB_Username: "alta",
+		DB_Password: "root",
 		DB_Port:     "3306",
-		DB_Host:     "localhost",
-		DB_Name:     "crud_go",
+		DB_Host:     "192.168.1.5",
+		DB_Name:     "go_movie-ticket",
 	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -52,5 +52,6 @@ func InitDB() {
 
 func InitialMigration() {
 	DB.AutoMigrate(&models.User{})
-	DB.AutoMigrate(&models.Book{})
+	DB.AutoMigrate(&models.Movie{})
+	DB.AutoMigrate(&models.Order{})
 }
