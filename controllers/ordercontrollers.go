@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"go_movie-ticket/lib/database"
 	"go_movie-ticket/middlewares"
 	"go_movie-ticket/models/payload"
 	"go_movie-ticket/usecase"
@@ -29,10 +28,9 @@ func CreateOrderController(c echo.Context) error {
 }
 
 func GetOrderByUserIdControllers(c echo.Context) error {
-
 	id := middlewares.ExtractTokenUserId(c)
 
-	orders, err := database.GetOrderByUserId(id)
+	orders, err := usecase.GetOrderByUserId(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}

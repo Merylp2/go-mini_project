@@ -22,6 +22,7 @@ func New() *echo.Echo {
 	user.GET("", controllers.GetUserByIdController)
 	user.PUT("", controllers.UpdateUserByIdController)
 	user.DELETE("", controllers.DeleteUserByIdController)
+	user.PUT("/topup", controllers.TopupController)
 
 	// movie
 	movie := e.Group("/movie")

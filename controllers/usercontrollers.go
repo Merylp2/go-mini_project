@@ -43,21 +43,6 @@ func LoginUserController(c echo.Context) error {
 	})
 }
 
-// // Get  user controller
-// func GetUsersController(c echo.Context) error {
-// 	id := middlewares.ExtractTokenUserId(c)
-
-// 	users, err := usecase.GetUser(id)
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, err.Error())
-// 	}
-
-// 	return c.JSON(http.StatusOK, map[string]interface{}{
-// 		"Message": "success get all user",
-// 		"Data":    users,
-// 	})
-// }
-
 // Get user by id controller --
 func GetUserByIdController(c echo.Context) error {
 	id := middlewares.ExtractTokenUserId(c)
@@ -105,5 +90,22 @@ func DeleteUserByIdController(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"Message": "success delete user",
+	})
+}
+
+func TopupController(c echo.Context) error {
+	req := payload.TopupRequest{}
+	id := middlewares.ExtractTokenUserId(c)
+
+	c.Bind(&req)
+
+	user, err := usecase.TopupUser(uint(id), req.Saldo)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"Message": "success topup",
+		"Data":    user,
 	})
 }

@@ -23,22 +23,17 @@ func CreateOrder(id int, req payload.OrderRequest) (models.Order, error) {
 	regisReq := models.Order{
 		UserID:   user.ID,
 		MovieID:  uint(req.MovieID),
-		Quantity: req.Quantity,
+		Quantity: uint(req.Quantity),
 	}
 
 	if movie.Seat == 0 {
 		return models.Order{}, echo.NewHTTPError(400, "Tiket sudah habis")
 	}
 
-	order, _ := database.CheckOrder(regisReq)
-	if order.UserID >= 10 {
-		return models.Order{}, echo.NewHTTPError(400, "Mencapai batas pembelian tiket")
-	}
-
-	if int(user.Saldo) < movie.Price {
+	if uint(user.Saldo) < (movie.Price * req.Quantity) {
 		return models.Order{}, echo.NewHTTPError(400, "Saldo tidak cukup")
 	} else {
-		user.Saldo -= movie.Price
+		user.Saldo -= (movie.Price * req.Quantity)
 
 		err = database.UpdateUsers(&user)
 		if err != nil {
@@ -46,14 +41,19 @@ func CreateOrder(id int, req payload.OrderRequest) (models.Order, error) {
 		}
 	}
 
-	order, err = database.CreateOrder(regisReq)
+	_, err = database.CreateOrder(regisReq)
 	if err != nil {
 		return models.Order{}, err
 	}
 
 	movie.Seat -= req.Quantity
 
-	_, err = database.UpdateMovie(int(regisReq.MovieID))
+	_, err = database.UpdateMovie(uint(regisReq.MovieID))
+	if err != nil {
+		return models.Order{}, err
+	}
+
+	order, err := database.GetOrderByUserID(int(user.ID))
 	if err != nil {
 		return models.Order{}, err
 	}
@@ -62,7 +62,6 @@ func CreateOrder(id int, req payload.OrderRequest) (models.Order, error) {
 }
 
 func GetOrderByUserId(id int) (order []models.Order, err error) {
-
 	user, err := database.GetUserById(id)
 	if err != nil {
 		return nil, err

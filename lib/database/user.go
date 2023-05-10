@@ -36,16 +36,6 @@ func CreateUser(user models.User) (models.User, error) {
 	return user, nil
 }
 
-// Get all user
-func GetUser() (users []models.User, err error) {
-	err = config.DB.Find(&users).Error
-
-	if err != nil {
-		return []models.User{}, err
-	}
-	return
-}
-
 // Get user by id
 func GetUserById(id any) (models.User, error) {
 	var user models.User
@@ -60,19 +50,18 @@ func GetUserById(id any) (models.User, error) {
 }
 
 // Update user by id
-func UpdateUser(id int, users models.User) (models.User, error) {
-	err := config.DB.Where("id = ?", id).Save(&users).Error
+func UpdateUser(users *models.User) error {
+	err := config.DB.Save(users).Error
 
 	if err != nil {
-		return models.User{}, err
+		return err
 	}
 
-	return users, nil
+	return nil
 }
 
-func UpdateUsers(*models.User) error {
-	var users models.User
-	err := config.DB.Save(&users).Error
+func UpdateUsers(users *models.User) error {
+	err := config.DB.Save(users).Error
 
 	if err != nil {
 		return err

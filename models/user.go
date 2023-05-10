@@ -7,9 +7,9 @@ type User struct {
 	Name     string  `json:"name" form:"name"`
 	NoHP     string  `json:"no_hp" form:"no_hp"`
 	Username string  `json:"username" form:"username"`
-	Password string  `json:"password" form:"password"`
-	Saldo    int     `json:"saldo" form:"saldo"`
-	Token    string  `json:"token" form:"token"`
+	Password string  `json:"-" form:"password"`
+	Saldo    uint     `json:"saldo" form:"saldo"`
+	Token    string  `json:"-" form:"token"`
 	Order    []Order `json:"-" gorm:"foreignKey:UserID"`
 }
 

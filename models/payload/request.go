@@ -13,7 +13,11 @@ type UpdateUser struct {
 }
 
 type OrderRequest struct {
-	UserID   int `json:"user_id" form:"user_id" validate:"required"`
-	MovieID  int `json:"movie_id" form:"movie_id" validate:"required"`
-	Quantity int `json:"quantity" form:"quantity" validate:"required"`
+	UserID   uint `json:"user_id" form:"user_id" validate:"required"`
+	MovieID  uint `json:"movie_id" form:"movie_id" validate:"required"`
+	Quantity uint `json:"quantity" form:"quantity" validate:"required"`
+}
+
+type TopupRequest struct {
+	Saldo uint `json:"saldo" form:"saldo"`
 }

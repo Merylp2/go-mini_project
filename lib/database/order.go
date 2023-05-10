@@ -24,7 +24,15 @@ func GetOrder() ([]models.Order, error) {
 }
 
 func GetOrderByUserId(id int) (order []models.Order, err error) {
-	err = config.DB.Where("user_id = ?", id).Find(&order).Error
+	err = config.DB.Preload("Movie").Where("user_id = ?", id).Find(&order).Error
+	if err != nil {
+		return order, err
+	}
+	return order, nil
+}
+
+func GetOrderByUserID(id int) (order models.Order, err error) {
+	err = config.DB.Preload("Movie").Where("user_id = ?", id).Find(&order).Error
 	if err != nil {
 		return order, err
 	}

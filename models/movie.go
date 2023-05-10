@@ -13,8 +13,8 @@ type Movie struct {
 	Duration    string    `json:"duration" form:"duration"`
 	Director    string    `json:"director" form:"director"`
 	Description string    `json:"description" form:"description"`
-	Price       int       `json:"price" form:"price"`
-	Seat        int       `json:"seat" form:"seat"`
+	Price       uint      `json:"price" form:"price"`
+	Seat        uint      `json:"seat" form:"seat"`
 	Rating      int       `json:"rating" form:"rating"`
 	ShowTimes   time.Time `json:"show_times" form:"show_times"`
 }
