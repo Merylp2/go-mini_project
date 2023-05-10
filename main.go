@@ -5,7 +5,7 @@ import (
 	m "go_movie-ticket/middlewares"
 	"go_movie-ticket/routes"
 
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {

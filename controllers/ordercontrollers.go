@@ -2,18 +2,22 @@ package controllers
 
 import (
 	"go_movie-ticket/lib/database"
-	"go_movie-ticket/models"
+	"go_movie-ticket/middlewares"
+	"go_movie-ticket/models/payload"
+	"go_movie-ticket/usecase"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 func CreateOrderController(c echo.Context) error {
-	order := models.Order{}
-	c.Bind(&order)
+	req := payload.OrderRequest{}
 
-	order, err := database.CreateOrder(order)
+	c.Bind(&req)
 
+	id := middlewares.ExtractTokenUserId(c)
+
+	order, err := usecase.CreateOrder(id, req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -24,12 +28,17 @@ func CreateOrderController(c echo.Context) error {
 	})
 }
 
-func GetOrderControllers(c echo.Context) error {
-	orders, err := database.GetOrder()
+func GetOrderByUserIdControllers(c echo.Context) error {
 
+	id := middlewares.ExtractTokenUserId(c)
+
+	orders, err := database.GetOrderByUserId(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, orders)
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "success get order",
+		Data:    orders,
+	})
 }

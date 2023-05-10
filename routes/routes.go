@@ -12,24 +12,25 @@ import (
 
 func New() *echo.Echo {
 	e := echo.New()
-	// user
+
+	// Auth
 	e.POST("/register/users", controllers.CreateUserController)
 	e.POST("/login/users", controllers.LoginUserController)
+
+	// user
 	user := e.Group("/profile", middleware.JWT([]byte(constants.SECRET_JWT)))
 	user.GET("", controllers.GetUserByIdController)
 	user.PUT("", controllers.UpdateUserByIdController)
 	user.DELETE("", controllers.DeleteUserByIdController)
 
 	// movie
-	e.GET("/movies", controllers.GetMoviesControllers)
-	e.GET("/movies/:id", controllers.GetMovieByIdController)
-		
+	movie := e.Group("/movie")
+	movie.GET("", controllers.GetMoviesControllers)
+	movie.GET("/:id", controllers.GetMovieByIdController)
+
 	// order
-	e.POST("/order", controllers.CreateOrderController)
-	e.GET("/order", controllers.GetOrderControllers)
-	// e.GET("/movies/:id", controllers.GetMovieByIdController)
-	// e.PUT("/movies/:id", controllers.UpdateMovieByIdController)
-	// e.DELETE("/movies/:id", controllers.DeleteMovieByIdController)
+	e.POST("/order", controllers.CreateOrderController, middleware.JWT([]byte(constants.SECRET_JWT)))
+	e.GET("/order", controllers.GetOrderByUserIdControllers, middleware.JWT([]byte(constants.SECRET_JWT)))
 
 	return e
 }

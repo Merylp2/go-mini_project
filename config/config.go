@@ -4,18 +4,14 @@ import (
 	"fmt"
 	"go_movie-ticket/models"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	_ "gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var (
 	DB *gorm.DB
 )
-
-func init() {
-	InitDB()
-	InitialMigration()
-}
 
 type Config struct {
 	DB_Username string
@@ -44,14 +40,15 @@ func InitDB() {
 	)
 
 	var err error
-	DB, err = gorm.Open("mysql", connectionString)
+	DB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		panic("failed to connect database")
 	}
+
+	InitialMigration()
+
 }
 
 func InitialMigration() {
-	DB.AutoMigrate(&models.User{})
-	DB.AutoMigrate(&models.Movie{})
-	DB.AutoMigrate(&models.Order{})
+	DB.AutoMigrate(&models.User{}, &models.Movie{}, &models.Order{})
 }

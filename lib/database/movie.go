@@ -14,49 +14,32 @@ func CreateMovie(movie models.Movie) (models.Movie, error) {
 	return movie, nil
 }
 
-func GetMovie() (movie models.Movie, err error) {
-	err = config.DB.First(&movie).Error
-	if err != nil {
+func GetMovie() ([]models.Movie, error) {
+	movie := []models.Movie{}
+
+	if err := config.DB.Find(&movie).Error; err != nil {
 		return movie, err
 	}
 	return movie, nil
 }
 
-func GetMovieById(id any) (models.MovieDetail, error) {
+func GetMovieById(id any) (models.Movie, error) {
 	var movie models.Movie
-	var movieD models.MovieDetail
 
-	err := config.DB.Where("id = ?", id).First(&movie).Error
-
-	if err != nil {
-		return models.MovieDetail{}, err
+	if err := config.DB.Where("id = ?", id).First(&movie).Error; err != nil {
+		return movie, err
 	}
 
-	movieD.MovieId = movie.MovieId
-	movieD.Title = movie.Title
-	movieD.Genre = movie.Genre
-	movieD.Director = movie.Director
-	movieD.Description = movie.Description
-	movieD.Duration = movie.Duration
-	movieD.Rating = movie.Rating
-	movieD.ShowTimes = movie.ShowTimes
-
-	return movieD, nil
+	return movie, nil
 }
 
-func UpdateMovie(movie models.Movie, id any) (models.Movie, error) {
-	var existingMovie models.Movie
-	err := config.DB.Table("movies").Where("id = ?", id).First(&existingMovie).Error
-	if err != nil {
-		return models.Movie{}, err
+func UpdateMovie(id int) (models.Movie, error) {
+	var movies models.Movie
+	if err := config.DB.Where("id = ?", id).Updates(&movies).Error; err != nil {
+		return movies, err
 	}
 
-	err = config.DB.Table("movies").Model(&existingMovie).Updates(&movie).Error
-	if err != nil {
-		return models.Movie{}, err
-	}
-
-	return existingMovie, nil
+	return movies, nil
 }
 
 func DeleteMovie(id any) (interface{}, error) {

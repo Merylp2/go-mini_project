@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"go_movie-ticket/lib/database"
+	"go_movie-ticket/middlewares"
 	"go_movie-ticket/models"
+	"go_movie-ticket/models/payload"
+	"go_movie-ticket/usecase"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -40,30 +43,26 @@ func LoginUserController(c echo.Context) error {
 	})
 }
 
-// Get all user controller
-func GetUsersController(c echo.Context) error {
-	// err := middlewares.ExtractTokenUserId()
-	// if err != nil {
-	// 	return c.JSON(http.StatusBadRequest, err.Error())
-	// }
+// // Get  user controller
+// func GetUsersController(c echo.Context) error {
+// 	id := middlewares.ExtractTokenUserId(c)
 
-	users, err := database.GetUser()
+// 	users, err := usecase.GetUser(id)
+// 	if err != nil {
+// 		return c.JSON(http.StatusBadRequest, err.Error())
+// 	}
 
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
+// 	return c.JSON(http.StatusOK, map[string]interface{}{
+// 		"Message": "success get all user",
+// 		"Data":    users,
+// 	})
+// }
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"Message": "success get all user",
-		"Data":    users,
-	})
-}
-
-// Get user by id controller
+// Get user by id controller --
 func GetUserByIdController(c echo.Context) error {
-	UserId := c.Param("id")
+	id := middlewares.ExtractTokenUserId(c)
 
-	user, err := database.GetUserById(UserId)
+	user, err := database.GetUserById(id)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -77,13 +76,13 @@ func GetUserByIdController(c echo.Context) error {
 
 // Update user by id controller
 func UpdateUserByIdController(c echo.Context) error {
-	UserId := c.Param("id")
+	req := payload.UpdateUser{}
 
-	user := models.User{}
-	c.Bind(&user)
+	id := middlewares.ExtractTokenUserId(c)
 
-	user, err := database.UpdateUser(user, UserId)
+	c.Bind(&req)
 
+	user, err := usecase.UpdateUser(id, req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -96,9 +95,9 @@ func UpdateUserByIdController(c echo.Context) error {
 
 // Delete user by id controller-
 func DeleteUserByIdController(c echo.Context) error {
-	UserId := c.Param("id")
+	id := middlewares.ExtractTokenUserId(c)
 
-	_, err := database.DeleteUser(UserId)
+	_, err := database.DeleteUser(id)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())

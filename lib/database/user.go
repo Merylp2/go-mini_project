@@ -50,7 +50,7 @@ func GetUser() (users []models.User, err error) {
 func GetUserById(id any) (models.User, error) {
 	var user models.User
 
-	err := config.DB.Where("id = ?", id).First(&user).Error
+	err := config.DB.Preload("Order.Movie").Where("id = ?", id).First(&user).Error
 
 	if err != nil {
 		return models.User{}, err
@@ -60,23 +60,34 @@ func GetUserById(id any) (models.User, error) {
 }
 
 // Update user by id
-func UpdateUser(user models.User, id any) (models.User, error) {
-	err := config.DB.Table("users").Where("id = ?", id).Updates(&user).Error
+func UpdateUser(id int, users models.User) (models.User, error) {
+	err := config.DB.Where("id = ?", id).Save(&users).Error
 
 	if err != nil {
 		return models.User{}, err
 	}
 
-	return user, nil
+	return users, nil
+}
+
+func UpdateUsers(*models.User) error {
+	var users models.User
+	err := config.DB.Save(&users).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Delete user by id
-func DeleteUser(id any) (interface{}, error) {
-	err := config.DB.Where("id = ?", id).Delete(&models.User{}).Error
+func DeleteUser(id any) (models.User, error) {
+	var user models.User
 
-	if err != nil {
-		return nil, err
+	if err := config.DB.Where("id = ?", id).Delete(&user).Error; err != nil {
+		return models.User{}, err
 	}
 
-	return "success delete user", nil
+	return user, nil
 }
