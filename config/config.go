@@ -26,7 +26,7 @@ func InitDB() {
 		DB_Username: "alta",
 		DB_Password: "root",
 		DB_Port:     "3306",
-		DB_Host:     "192.168.1.7",
+		DB_Host:     "192.168.1.5",
 		DB_Name:     "go_movie-ticket",
 	}
 

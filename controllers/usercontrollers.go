@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Create user controller
@@ -20,6 +21,17 @@ func CreateUserController(c echo.Context) error {
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return echo.NewHTTPError(400, "Failed to hash password")
+	}
+
+	user.Password = string(passwordHash)
+
+	if err != nil {
+		return nil
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
